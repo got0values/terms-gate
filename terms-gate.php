@@ -51,9 +51,46 @@ add_action('init', function() {
         ],
         'public' => false,
         'show_ui' => true,
-        'show_in_menu' => true,
+        'show_in_menu' => false, // Hide from main menu
         'show_in_rest' => true,
         'supports' => ['title', 'editor'],
         'menu_icon' => 'dashicons-yes',
     ]);
 });
+
+// Add custom admin menu for Terms Gate
+add_action('admin_menu', function() {
+    // Top-level menu
+    add_menu_page(
+        'Terms Gate',
+        'Terms Gate',
+        'manage_options',
+        'terms-gate-admin',
+        'tg_admin_page_html',
+        'dashicons-yes',
+        25
+    );
+
+    // Submenu for Terms Agreements (uses default post type UI)
+    add_submenu_page(
+        'terms-gate-admin',
+        'Terms Agreements',
+        'Terms Agreements',
+        'manage_options',
+        'edit.php?post_type=terms_agreement'
+    );
+});
+
+// The callback function for the Terms Gate admin page
+function tg_admin_page_html() {
+    ?>
+    <div class="wrap">
+        <h1>Terms Gate</h1>
+        <p>Welcome to the Terms Gate admin page. Here you can manage your terms agreements and plugin settings.</p>
+        <p>
+            <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
+        </p>
+        <!-- Add more settings or information here as needed -->
+    </div>
+    <?php
+}
