@@ -35,19 +35,19 @@ add_action('wp_enqueue_scripts', function() {
 });
 
 add_action('init', function() {
-    register_post_type('qtt_agreement_form', [
+    register_post_type('terms_agreement', [
         'labels' => [
-            'name' => 'Agreement Forms',
-            'singular_name' => 'Agreement Form',
+            'name' => 'Terms Agreements',
+            'singular_name' => 'Terms Agreement',
             'add_new' => 'Add New',
-            'add_new_item' => 'Add New Agreement Form',
-            'edit_item' => 'Edit Agreement Form',
-            'new_item' => 'New Agreement Form',
-            'view_item' => 'View Agreement Form',
-            'search_items' => 'Search Agreement Forms',
-            'not_found' => 'No Agreement Forms found',
-            'not_found_in_trash' => 'No Agreement Forms found in Trash',
-            'menu_name' => 'Agreement Forms',
+            'add_new_item' => 'Add Terms Agreement',
+            'edit_item' => 'Edit Terms Agreement',
+            'new_item' => 'New Terms Agreement',
+            'view_item' => 'View Terms Agreement',
+            'search_items' => 'Search Terms Agreements',
+            'not_found' => 'No Terms Agreements found',
+            'not_found_in_trash' => 'No Terms Agreements found in Trash',
+            'menu_name' => 'Terms Agreements',
         ],
         'public' => false,
         'show_ui' => true,

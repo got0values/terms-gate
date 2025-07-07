@@ -20,7 +20,7 @@ function qtt_meta_box_html($post) {
 
     // Fetch all agreement forms
     $forms = get_posts([
-        'post_type' => 'qtt_agreement_form',
+        'post_type' => 'terms_agreement',
         'post_status' => 'publish',
         'numberposts' => -1,
     ]);
