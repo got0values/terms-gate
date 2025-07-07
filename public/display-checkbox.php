@@ -1,28 +1,20 @@
 <?php
-function qtt_check_terms_consent() {
+function qtt_check_terms_consent($content) {
     if (!is_singular()) {
-        return;
+        return $content;
     }
-
-    // if (is_admin() || current_user_can('edit_posts')) {
-    //     return; // Don't block admins/editors
-    // }
 
     global $post;
     $enabled = get_post_meta($post->ID, '_qtt_enabled', true);
     $form_id = get_post_meta($post->ID, '_qtt_form_id', true);
 
     if ($enabled !== 'checked' || !$form_id) {
-        return;
+        return $content;
     }
-
-    // Get the form content
-    $form_post = get_post($form_id);
-    $form_content = apply_filters('the_content', $form_post->post_content);
 
     $cookie_name = 'qtt_agree_' . $post->ID;
 
-    // If user has agreed (via cookie or POST), allow access
+    // If user has agreed (via cookie or POST), allow normal content
     if (
         (isset($_COOKIE[$cookie_name]) && $_COOKIE[$cookie_name] === '1') ||
         (isset($_POST['qtt_agree']) && $_POST['qtt_agree'] === '1')
@@ -30,16 +22,24 @@ function qtt_check_terms_consent() {
         if (isset($_POST['qtt_agree']) && $_POST['qtt_agree'] === '1') {
             setcookie($cookie_name, '1', time() + DAY_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN);
         }
-        return;
+        return $content;
     }
 
-    // Show agreement form and exit
+    // Get the form content safely (prevent infinite loop)
+    remove_filter('the_content', 'qtt_check_terms_consent');
+    $form_post = get_post($form_id);
+    $form_content = $form_post ? apply_filters('the_content', $form_post->post_content) : '';
+    add_filter('the_content', 'qtt_check_terms_consent');
+
     $action = esc_url($_SERVER['REQUEST_URI']);
-    echo '<form method="post" action="' . $action . '" class="terms-gate-form">';
-    echo $form_content;
-    echo '<label><input type="checkbox" name="qtt_agree" value="1" required> I agree</label><br><br>';
-    echo '<button type="submit">Continue</button>';
-    echo '</form>';
-    exit;
+    ob_start();
+    ?>
+    <form method="post" action="<?php echo $action; ?>" class="terms-gate-form">
+        <?php echo $form_content; ?>
+        <label><input type="checkbox" name="qtt_agree" value="1" required> I agree</label><br>
+        <button type="submit">Continue</button>
+    </form>
+    <?php
+    return ob_get_clean();
 }
-add_action('template_redirect', 'qtt_check_terms_consent');
+add_filter('the_content', 'qtt_check_terms_consent');
