@@ -1,4 +1,4 @@
-.qtt-terms-form {
+.tg-terms-form {
     margin: 2em auto;
     padding: 2em;
     max-width: 400px;
@@ -8,12 +8,12 @@
     text-align: center;
 }
 
-.qtt-terms-form label {
+.tg-terms-form label {
     font-size: 1.1em;
     cursor: pointer;
 }
 
-.qtt-terms-form button {
+.tg-terms-form button {
     margin-top: 1em;
     padding: 0.5em 2em;
     font-size: 1em;
@@ -24,6 +24,6 @@
     cursor: pointer;
 }
 
-.qtt-terms-form button:hover {
+.tg-terms-form button:hover {
     background: #005177;
 }

@@ -6,25 +6,25 @@ Version: 1.0
 Author: You
 */
 
-define('QTT_PATH', plugin_dir_path(__FILE__));
+define('TG_PATH', plugin_dir_path(__FILE__));
 
-require_once QTT_PATH . 'admin/meta-box.php';
-require_once QTT_PATH . 'public/display-checkbox.php';
+require_once TG_PATH . 'admin/meta-box.php';
+require_once TG_PATH . 'public/display-checkbox.php';
 
 
 add_action('wp_enqueue_scripts', function() {
     // Only load on singular posts/pages where the terms toggle is enabled
     if (is_singular()) {
         global $post;
-        if ($post && get_post_meta($post->ID, '_qtt_enabled', true) === 'checked') {
+        if ($post && get_post_meta($post->ID, '_tg_enabled', true) === 'checked') {
             wp_enqueue_style(
-                'qtt-terms-style',
+                'tg-terms-style',
                 plugins_url('assets/css/style.css', __FILE__),
                 [],
                 '1.0'
             );
             wp_enqueue_script(
-                'qtt-terms-script',
+                'tg-terms-script',
                 plugins_url('assets/js/script.js', __FILE__),
                 [],
                 '1.0',

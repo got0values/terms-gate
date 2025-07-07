@@ -1,45 +1,45 @@
 <?php
-function qtt_check_terms_consent($content) {
+function tg_check_terms_consent($content) {
     if (!is_singular()) {
         return $content;
     }
 
     global $post;
-    $enabled = get_post_meta($post->ID, '_qtt_enabled', true);
-    $form_id = get_post_meta($post->ID, '_qtt_form_id', true);
+    $enabled = get_post_meta($post->ID, '_tg_enabled', true);
+    $form_id = get_post_meta($post->ID, '_tg_form_id', true);
 
     if ($enabled !== 'checked' || !$form_id) {
         return $content;
     }
 
-    $cookie_name = 'qtt_agree_' . $post->ID;
+    $cookie_name = 'tg_agree_' . $post->ID;
 
     // If user has agreed (via cookie or POST), allow normal content
     if (
         (isset($_COOKIE[$cookie_name]) && $_COOKIE[$cookie_name] === '1') ||
-        (isset($_POST['qtt_agree']) && $_POST['qtt_agree'] === '1')
+        (isset($_POST['tg_agree']) && $_POST['tg_agree'] === '1')
     ) {
-        if (isset($_POST['qtt_agree']) && $_POST['qtt_agree'] === '1') {
+        if (isset($_POST['tg_agree']) && $_POST['tg_agree'] === '1') {
             setcookie($cookie_name, '1', time() + DAY_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN);
         }
         return $content;
     }
 
     // Get the form content safely (prevent infinite loop)
-    remove_filter('the_content', 'qtt_check_terms_consent');
+    remove_filter('the_content', 'tg_check_terms_consent');
     $form_post = get_post($form_id);
     $form_content = $form_post ? apply_filters('the_content', $form_post->post_content) : '';
-    add_filter('the_content', 'qtt_check_terms_consent');
+    add_filter('the_content', 'tg_check_terms_consent');
 
     $action = esc_url($_SERVER['REQUEST_URI']);
     ob_start();
     ?>
     <form method="post" action="<?php echo $action; ?>" class="terms-gate-form">
         <?php echo $form_content; ?>
-        <label><input type="checkbox" name="qtt_agree" value="1" required> I agree</label><br>
+        <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label><br>
         <button type="submit">Continue</button>
     </form>
     <?php
     return ob_get_clean();
 }
-add_filter('the_content', 'qtt_check_terms_consent');
+add_filter('the_content', 'tg_check_terms_consent');
