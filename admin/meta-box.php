@@ -24,11 +24,27 @@ function tg_meta_box_html($post) {
         'post_status' => 'publish',
         'numberposts' => -1,
     ]);
-    echo '<select name="tg_form_id"><option value="">Select agreement form...</option>';
+    echo '<select name="tg_form_id" style="margin-top:10px;"><option value="">Select terms agreement...</option>';
     foreach ($forms as $form) {
         echo '<option value="' . esc_attr($form->ID) . '" ' . selected($selected_form, $form->ID, false) . '>' . esc_html($form->post_title) . '</option>';
     }
     echo '</select>';
+
+    // Add JavaScript to toggle select disabled state
+    ?>
+    <script>
+    (function() {
+        var checkbox = document.querySelector('input[name="tg_enabled"]');
+        var select = document.querySelector('select[name="tg_form_id"]');
+        function toggleSelect() {
+            select.disabled = !checkbox.checked;
+        }
+        checkbox.addEventListener('change', toggleSelect);
+        // Set initial state
+        toggleSelect();
+    })();
+    </script>
+    <?php
 }
 
 function tg_save_meta($post_id) {
