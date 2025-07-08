@@ -52,7 +52,7 @@ add_action('init', function() {
         'public' => false,
         'show_ui' => true,
         'show_in_menu' => false, // Hide from main menu
-        'show_in_rest' => true,
+        'show_in_rest' => false,
         'supports' => ['title', 'editor'],
         'menu_icon' => 'dashicons-yes',
     ]);
