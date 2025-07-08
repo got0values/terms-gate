@@ -83,10 +83,22 @@ add_action('admin_menu', function() {
 
 // The callback function for the Terms Gate admin page
 function tg_admin_page_html() {
+    $enabled_count = count(get_posts([
+        'post_type'   => ['post', 'page'],
+        'post_status' => 'any',
+        'meta_key'    => '_tg_enabled',
+        'meta_value'  => 'checked',
+        'fields'      => 'ids',
+        'posts_per_page' => -1,
+    ]));
+    $limit = 3;
     ?>
     <div class="wrap">
         <h1>Terms Gate</h1>
         <p>Welcome to the Terms Gate admin page. Here you can manage your terms agreements and plugin settings.</p>
+        <p>
+            <strong>Enabled pages/posts:</strong> <?php echo esc_html($enabled_count); ?> out of <?php echo esc_html($limit); ?>
+        </p>
         <p>
             <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
         </p>
