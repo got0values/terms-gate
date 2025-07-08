@@ -28,7 +28,7 @@ else {
                   'slug'                => 'terms-gate',
                   'type'                => 'plugin',
                   'public_key'          => 'pk_9f86febc1ca1399f11342380f6de0',
-                  'is_premium'          => true,
+                  'is_premium'          => false,
                   'premium_suffix'      => 'Premium',
                   // If your plugin is a serviceware, set this option to false.
                   'has_premium_version' => true,
@@ -136,21 +136,31 @@ else {
           'fields'      => 'ids',
           'posts_per_page' => -1,
       ]));
-      $limit = 3;
+
+      // Check if premium is active
+      $is_premium = function_exists('tg_fs') && tg_fs()->is_plan('premium');
+
+      // Set limit: 3 for free, unlimited for premium
+      $limit = $is_premium ? 0 : 3; // 0 means unlimited
+
       ?>
       <div class="wrap">
-          <h1>Terms Gate</h1>
-          <p>Welcome to the Terms Gate admin page. Here you can manage your terms agreements and plugin settings.</p>
-          <p>
-              <strong>Enabled pages/posts:</strong> <?php echo esc_html($enabled_count); ?> out of <?php echo esc_html($limit); ?>
-          </p>
-          <style>
-              p.submit {
-                  margin: 0;
-              }
-          </style>
+        <h1>Terms Gate <?php echo $is_premium ? "(Premium)" : "(Free)" ?></h1>
+        <p>Welcome to the Terms Gate admin page. Here you can manage your terms agreements and plugin settings.</p>
+        <p>
+            <strong>Enabled pages/posts:</strong>
+            <?php echo esc_html($enabled_count); ?>
+            <?php if ($limit): ?>
+                out of <?php echo esc_html($limit); ?>
+            <?php else: ?>
+                out of (unlimited)
+            <?php endif; ?>
+        </p>
           <p>
               <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
+          </p>
+          <p>
+              <a href="<?php echo admin_url('admin.php?page=terms-gate-admin-account'); ?>" class="button button-primary">Account</a>
           </p>
       </div>
       <?php

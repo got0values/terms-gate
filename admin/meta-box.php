@@ -14,8 +14,10 @@ function tg_meta_box_html($post) {
     $enabled = get_post_meta($post->ID, '_tg_enabled', true);
     $selected_form = get_post_meta($post->ID, '_tg_form_id', true);
 
+    $is_premium = function_exists('tg_fs') && tg_fs()->is_plan('premium');
+    $limit = $is_premium ? PHP_INT_MAX : 3; // 0 means unlimited
+
     // Count enabled posts/pages (excluding this one)
-    $limit = 3;
     $args = [
         'post_type'   => ['post', 'page'],
         'post_status' => 'any',
@@ -72,11 +74,12 @@ function tg_save_meta($post_id) {
     if (!current_user_can('edit_post', $post_id)) return;
 
     // Limit: Only allow 3 posts/pages to have the toggle enabled
-    $limit = 3;
+    $is_premium = function_exists('tg_fs') && tg_fs()->is_plan('premium');
+    $limit = $is_premium ? 0 : 3; // 0 means unlimited
     $enabled = isset($_POST['tg_enabled']) && $_POST['tg_enabled'] === 'checked' ? 'checked' : '';
 
     // Only check when enabling
-    if ($enabled === 'checked') {
+    if ($enabled === 'checked' && $limit) {
         $args = [
             'post_type'   => ['post', 'page'],
             'post_status' => 'any',
