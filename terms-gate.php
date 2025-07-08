@@ -99,10 +99,23 @@ function tg_admin_page_html() {
         <p>
             <strong>Enabled pages/posts:</strong> <?php echo esc_html($enabled_count); ?> out of <?php echo esc_html($limit); ?>
         </p>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('tg_license_group');
+            do_settings_sections('tg_license_group');
+            $license = get_option('tg_license_key', '');
+            ?>
+            <input type="text" name="tg_license_key" value="<?php echo esc_attr($license); ?>" style="width:300px;" placeholder="Enter your license key" />
+            <?php submit_button('Save License Key'); ?>
+        </form>
+        <style>
+            p.submit {
+                margin: 0;
+            }
+        </style>
         <p>
             <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
         </p>
-        <!-- Add more settings or information here as needed -->
     </div>
     <?php
 }
