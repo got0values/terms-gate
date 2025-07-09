@@ -44,8 +44,8 @@ function tg_check_terms_consent($content) {
     $action = esc_url($_SERVER['REQUEST_URI']);
     ob_start();
     ?>
-    <form method="post" action="<?php echo $action; ?>" class="terms-gate-form">
-        <?php echo $form_content; ?>
+    <form method="post" action="<?php echo esc_url($action); ?>" class="terms-gate-form">
+        <?php echo esc_url($form_content); ?>
         <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;">
           <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label>
           <button type="submit">Continue</button>

@@ -8,7 +8,6 @@ Author URI: https://hooklabs.dev/
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: terms-gate
-Domain Path: /languages
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -174,14 +173,14 @@ else {
             <?php endif; ?>
         </p>
         <p>
-            <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
+            <a href="<?php echo esc_url(admin_url('edit.php?post_type=terms_agreement')); ?>" class="button button-primary">Manage Terms Agreements</a>
         </p>
         <?php if ($is_premium): ?>
         <p>
-          <a href="<?php echo admin_url('admin.php?page=terms-gate-bulk-update'); ?>" class="button button-primary">Bulk Update</a>
+          <a href="<?php echo esc_url(admin_url('admin.php?page=terms-gate-bulk-update')); ?>" class="button button-primary">Bulk Update</a>
         </p>
         <p>
-            <a href="<?php echo admin_url('admin.php?page=terms-gate-admin-account'); ?>" class="button button-primary">Account</a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=terms-gate-admin-account')); ?>" class="button button-primary">Account</a>
         </p>
         <?php endif; ?>
       </div>
@@ -198,7 +197,9 @@ else {
       // Handle bulk assignment
       if (
           isset($_POST['tg_bulk_assign_nonce']) &&
-          wp_verify_nonce($_POST['tg_bulk_assign_nonce'], 'tg_bulk_assign')
+          wp_verify_nonce(
+            sanitize_text_field(wp_unslash($_POST['tg_bulk_assign_nonce'])), 'tg_bulk_assign'
+          )
       ) {
           $types = [];
           if (!empty($_POST['tg_bulk_update_posts'])) $types[] = 'post';
