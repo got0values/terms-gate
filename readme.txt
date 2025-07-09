@@ -20,6 +20,7 @@ Require users to agree to your terms before viewing selected WordPress pages or 
 - Easy admin interface for managing agreements
 - Bulk assign or unassign agreements (Premium)
 - Supports Gutenberg and Classic Editor
+- SEO Friendly – common bots and crawlers are omitted from terms agreement pages
 
 **Premium Features:**
 - Remove the 3-page/post limit
