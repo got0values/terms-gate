@@ -129,11 +129,11 @@ else {
         if ($is_premium) {
             add_submenu_page(
                 'terms-gate-admin',
-                'Bulk Assign Terms',
-                'Bulk Assign Terms',
+                'Bulk Update',
+                'Bulk Update',
                 'manage_options',
-                'terms-gate-bulk-assign',
-                'tg_bulk_assign_page_html',
+                'terms-gate-bulk-update',
+                'tg_bulk_update_page_html',
             );
         }
   });
@@ -173,6 +173,9 @@ else {
         </p>
         <?php if ($is_premium): ?>
         <p>
+          <a href="<?php echo admin_url('admin.php?page=terms-gate-bulk-update'); ?>" class="button button-primary">Bulk Update</a>
+        </p>
+        <p>
             <a href="<?php echo admin_url('admin.php?page=terms-gate-admin-account'); ?>" class="button button-primary">Account</a>
         </p>
         <?php endif; ?>
@@ -180,7 +183,7 @@ else {
       <?php
   }
 
-  function tg_bulk_assign_page_html() {
+  function tg_bulk_update_page_html() {
       // Check if premium is active
       $is_premium = function_exists('tg_fs') && tg_fs()->is_plan('premium');
       if (!$is_premium) {
@@ -243,7 +246,7 @@ else {
       }
       ?>
       <div class="wrap">
-          <h1>Bulk Assign Terms Agreement</h1>
+          <h1>Bulk Update</h1>
           <br>
           <form method="post">
             <label for="tg_bulk_terms_id">Select Terms Agreement:</label>
