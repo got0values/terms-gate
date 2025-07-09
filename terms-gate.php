@@ -189,61 +189,92 @@ else {
 
       // Handle bulk assignment
       if (
-          isset($_POST['tg_bulk_terms_id'], $_POST['tg_bulk_assign_nonce']) &&
+          isset($_POST['tg_bulk_assign_nonce']) &&
           wp_verify_nonce($_POST['tg_bulk_assign_nonce'], 'tg_bulk_assign')
       ) {
-          $terms_id = intval($_POST['tg_bulk_terms_id']);
           $types = [];
           if (!empty($_POST['tg_bulk_update_posts'])) $types[] = 'post';
           if (!empty($_POST['tg_bulk_update_pages'])) $types[] = 'page';
 
-          if ($terms_id && $types) {
-              $args = [
-                  'post_type'      => $types,
-                  'post_status'    => 'any',
-                  'posts_per_page' => -1,
-                  'fields'         => 'ids',
-              ];
-              $ids = get_posts($args);
-              foreach ($ids as $id) {
-                  update_post_meta($id, '_tg_form_id', $terms_id);
-                  update_post_meta($id, '_tg_enabled', 'checked');
+          // Bulk Unassign
+          if (isset($_POST['tg_bulk_unassign'])) {
+              if ($types) {
+                  $args = [
+                      'post_type'      => $types,
+                      'post_status'    => 'any',
+                      'posts_per_page' => -1,
+                      'fields'         => 'ids',
+                  ];
+                  $ids = get_posts($args);
+                  foreach ($ids as $id) {
+                      delete_post_meta($id, '_tg_form_id');
+                      delete_post_meta($id, '_tg_enabled');
+                  }
+                  echo '<div class="notice notice-success is-dismissible"><p>Bulk unassign complete! All selected posts/pages no longer require a Terms Agreement.</p></div>';
+              } else {
+                  echo '<div class="notice notice-error is-dismissible"><p>Please select at least one content type to unassign.</p></div>';
               }
-              echo '<div class="notice notice-success is-dismissible"><p>Bulk assignment complete! All selected posts/pages now require the chosen Terms Agreement.</p></div>';
-          } else {
-              echo '<div class="notice notice-error is-dismissible"><p>Please select a Terms Agreement and at least one content type.</p></div>';
+          }
+          // Bulk Assign (existing code)
+          elseif (isset($_POST['tg_bulk_terms_id'])) {
+            $terms_id = intval($_POST['tg_bulk_terms_id']);
+            if ($terms_id && $types) {
+                $args = [
+                    'post_type'      => $types,
+                    'post_status'    => 'any',
+                    'posts_per_page' => -1,
+                    'fields'         => 'ids',
+                ];
+                $ids = get_posts($args);
+                foreach ($ids as $id) {
+                    update_post_meta($id, '_tg_form_id', $terms_id);
+                    update_post_meta($id, '_tg_enabled', 'checked');
+                }
+                echo '<div class="notice notice-success is-dismissible"><p>Bulk assignment complete! All selected posts/pages now require the chosen Terms Agreement.</p></div>';
+            } else {
+              if (!$terms_id) {
+                echo '<div class="notice notice-error is-dismissible"><p>Please select a Terms Agreement.</p></div>';
+              }
+              else if (!$types) {
+                echo '<div class="notice notice-error is-dismissible"><p>Please select at least one content type.</p></div>';
+              }
+            }
           }
       }
       ?>
       <div class="wrap">
           <h1>Bulk Assign Terms Agreement</h1>
+          <br>
           <form method="post">
-              <label for="tg_bulk_terms_id">Select Terms Agreement:</label>
-              <select name="tg_bulk_terms_id" id="tg_bulk_terms_id" required>
-                  <option value="">-- Select --</option>
-                  <?php
-                  $forms = get_posts([
-                      'post_type' => 'terms_agreement',
-                      'post_status' => 'publish',
-                      'numberposts' => -1,
-                  ]);
-                  foreach ($forms as $form) {
-                      echo '<option value="' . esc_attr($form->ID) . '">' . esc_html($form->post_title) . '</option>';
-                  }
-                  ?>
-              </select>
-              <br>
-              <label><input type="checkbox" name="tg_bulk_update_posts" value="1"> Update all <strong>Posts</strong></label><br>
-              <label><input type="checkbox" name="tg_bulk_update_pages" value="1"> Update all <strong>Pages</strong></label><br><br>
+            <label for="tg_bulk_terms_id">Select Terms Agreement:</label>
+            <select name="tg_bulk_terms_id" id="tg_bulk_terms_id">
+                <option value="">-- Select --</option>
+                <?php
+                $forms = get_posts([
+                    'post_type' => 'terms_agreement',
+                    'post_status' => 'publish',
+                    'numberposts' => -1,
+                ]);
+                foreach ($forms as $form) {
+                    echo '<option value="' . esc_attr($form->ID) . '">' . esc_html($form->post_title) . '</option>';
+                }
+                ?>
+            </select>
+            <br>
+            <label><input type="checkbox" name="tg_bulk_update_posts" value="1"> Update all <strong>Posts</strong></label><br>
+            <label><input type="checkbox" name="tg_bulk_update_pages" value="1"> Update all <strong>Pages</strong></label><br><br>
+            <div style="display: flex; gap: 10px;">
               <?php submit_button('Bulk Assign'); ?>
-              <?php wp_nonce_field('tg_bulk_assign', 'tg_bulk_assign_nonce'); ?>
-          </form>
-          <style>
-              form p.submit {
-                  margin: 0;
-                  padding: 0;
-              }
-          </style>
+              <input type="submit" name="tg_bulk_unassign" class="button button-secondary" value="Bulk Unassign" />
+            </div>
+            <?php wp_nonce_field('tg_bulk_assign', 'tg_bulk_assign_nonce'); ?>
+        </form>
+        <style>
+          form p.submit {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
       </div>
       <?php
   }
