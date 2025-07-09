@@ -4,6 +4,11 @@ Plugin Name: Terms Gate
 Description: Require users to agree to terms before viewing specific pages.
 Version: 1.0
 Author: Hook Labs
+Author URI: https://hooklabs.dev/
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: terms-gate
+Domain Path: /languages
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
