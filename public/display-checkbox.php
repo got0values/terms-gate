@@ -46,8 +46,10 @@ function tg_check_terms_consent($content) {
     ?>
     <form method="post" action="<?php echo $action; ?>" class="terms-gate-form">
         <?php echo $form_content; ?>
-        <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label><br>
-        <button type="submit">Continue</button>
+        <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;">
+          <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label>
+          <button type="submit">Continue</button>
+        </div>
     </form>
     <?php
     return ob_get_clean();
