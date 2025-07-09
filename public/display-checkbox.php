@@ -31,6 +31,16 @@ function tg_check_terms_consent($content) {
     $form_content = $form_post ? apply_filters('the_content', $form_post->post_content) : '';
     add_filter('the_content', 'tg_check_terms_consent');
 
+    // Output noindex meta tag for bots
+    add_action('wp_head', function() {
+        echo '<meta name="robots" content="noindex, nofollow" />' . "\n";
+    }, 1);
+
+    // Optionally, add X-Robots-Tag HTTP header
+    add_action('send_headers', function() {
+        header('X-Robots-Tag: noindex, nofollow', true);
+    }, 1);
+
     $action = esc_url($_SERVER['REQUEST_URI']);
     ob_start();
     ?>
