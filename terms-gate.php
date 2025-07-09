@@ -28,7 +28,7 @@ else {
                   'slug'                => 'terms-gate',
                   'type'                => 'plugin',
                   'public_key'          => 'pk_9f86febc1ca1399f11342380f6de0',
-                  'is_premium'          => false,
+                  'is_premium'          => true,
                   'premium_suffix'      => 'Premium',
                   // If your plugin is a serviceware, set this option to false.
                   'has_premium_version' => true,
@@ -159,9 +159,11 @@ else {
           <p>
               <a href="<?php echo admin_url('edit.php?post_type=terms_agreement'); ?>" class="button button-primary">Manage Terms Agreements</a>
           </p>
+          <?php if ($is_premium): ?>
           <p>
               <a href="<?php echo admin_url('admin.php?page=terms-gate-admin-account'); ?>" class="button button-primary">Account</a>
           </p>
+          <?php endif; ?>
       </div>
       <?php
   }
