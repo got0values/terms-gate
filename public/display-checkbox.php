@@ -46,7 +46,7 @@ function tg_check_terms_consent($content) {
     ?>
     <form method="post" action="<?php echo esc_url($action); ?>" class="terms-gate-form">
         <?php wp_nonce_field('tg_terms_agree', 'tg_terms_agree_nonce'); ?>
-        <?php echo esc_url($form_content); ?>
+        <?php echo wp_kses_post($form_content); ?>
         <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;">
           <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label>
           <button type="submit">Continue</button>
