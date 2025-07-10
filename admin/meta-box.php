@@ -70,7 +70,7 @@ function tg_meta_box_html($post) {
 function tg_save_meta($post_id) {
     // Security checks
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!isset($_POST['tg_meta_nonce']) || !wp_verify_nonce($_POST['tg_meta_nonce'], 'tg_save_meta')) return;
+    if (!isset($_POST['tg_meta_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tg_meta_nonce'])), 'tg_save_meta')) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
     // Limit: Only allow 3 posts/pages to have the toggle enabled

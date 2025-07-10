@@ -17,7 +17,7 @@ function tg_check_terms_consent($content) {
     // If user has agreed (via cookie or POST), allow normal content
     if (
         (isset($_COOKIE[$cookie_name]) && $_COOKIE[$cookie_name] === '1') ||
-        (isset($_POST['tg_agree']) && $_POST['tg_agree'] === '1')
+        (isset($_POST['tg_agree'], $_POST['tg_terms_agree_nonce']) && $_POST['tg_agree'] === '1' && wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tg_terms_agree_nonce'])), 'tg_terms_agree'))
     ) {
         if (isset($_POST['tg_agree']) && $_POST['tg_agree'] === '1') {
             setcookie($cookie_name, '1', time() + DAY_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN);
@@ -41,10 +41,11 @@ function tg_check_terms_consent($content) {
         header('X-Robots-Tag: noindex, nofollow', true);
     }, 1);
 
-    $action = esc_url($_SERVER['REQUEST_URI']);
+    $action = isset($_SERVER['REQUEST_URI']) ? esc_url(esc_url_raw(wp_unslash($_SERVER['REQUEST_URI']))) : '';
     ob_start();
     ?>
     <form method="post" action="<?php echo esc_url($action); ?>" class="terms-gate-form">
+        <?php wp_nonce_field('tg_terms_agree', 'tg_terms_agree_nonce'); ?>
         <?php echo esc_url($form_content); ?>
         <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;">
           <label><input type="checkbox" name="tg_agree" value="1" required> I agree</label>
