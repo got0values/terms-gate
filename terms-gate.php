@@ -129,17 +129,25 @@ else {
           'edit.php?post_type=termga_agreement'
       );
 
-      $is_premium = function_exists('termga_fs') && termga_fs()->is_plan('premium');
-        if ($is_premium) {
-            add_submenu_page(
-                'termga-admin',
-                'Bulk Update',
-                'Bulk Update',
-                'manage_options',
-                'termga-bulk-update',
-                'termga_bulk_update_page_html',
-            );
-        }
+      if ( function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only() ) {
+          add_submenu_page(
+              'termga-admin',
+              'Bulk Update',
+              'Bulk Update',
+              'manage_options',
+              'termga-bulk-update',
+              'termga_bulk_update_page_html',
+          );
+          // Optionally, add Account menu if you want it premium-only
+          add_submenu_page(
+              'termga-admin',
+              'Account',
+              'Account',
+              'manage_options',
+              'termga-admin-account',
+              function() { echo '<div class="wrap"><h1>Account</h1><p>Premium account management here.</p></div>'; }
+          );
+      }
   });
 
   // The callback function for the Terms Gate admin page
@@ -154,7 +162,7 @@ else {
       ]));
 
       // Check if premium is active
-      $is_premium = function_exists('termga_fs') && termga_fs()->is_plan('premium');
+      $is_premium = function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only();
 
       // Set limit: 3 for free, unlimited for premium
       $limit = $is_premium ? 0 : 3; // 0 means unlimited
@@ -188,9 +196,7 @@ else {
   }
 
   function termga_bulk_update_page_html() {
-      // Check if premium is active
-      $is_premium = function_exists('termga_fs') && termga_fs()->is_plan('premium');
-      if (!$is_premium) {
+      if ( ! ( function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only() ) ) {
           wp_die('You must have a premium license to access this page.');
       }
 

@@ -16,7 +16,7 @@ function termga_meta_box_html($post) {
     $enabled = get_post_meta($post->ID, '_termga_enabled', true);
     $selected_form = get_post_meta($post->ID, '_termga_form_id', true);
 
-    $is_premium = function_exists('termga_fs') && termga_fs()->is_plan('premium');
+    $is_premium = function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only();
     $limit = $is_premium ? PHP_INT_MAX : 3; // 0 means unlimited
 
     // Count enabled posts/pages (excluding this one)
@@ -76,7 +76,7 @@ function termga_save_meta($post_id) {
     if (!current_user_can('edit_post', $post_id)) return;
 
     // Limit: Only allow 3 posts/pages to have the toggle enabled
-    $is_premium = function_exists('termga_fs') && termga_fs()->is_plan('premium');
+    $is_premium = function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only();
     $limit = $is_premium ? 0 : 3; // 0 means unlimited
     $enabled = isset($_POST['termga_enabled']) && $_POST['termga_enabled'] === 'checked' ? 'checked' : '';
 
