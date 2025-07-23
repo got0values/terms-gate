@@ -138,15 +138,6 @@ else {
               'termga-bulk-update',
               'termga_bulk_update_page_html',
           );
-          // Optionally, add Account menu if you want it premium-only
-          add_submenu_page(
-              'termga-admin',
-              'Account',
-              'Account',
-              'manage_options',
-              'termga-admin-account',
-              function() { echo '<div class="wrap"><h1>Account</h1><p>Premium account management here.</p></div>'; }
-          );
       }
   });
 
