@@ -32,7 +32,7 @@ else {
                   'slug'                => 'terms-gate',
                   'type'                => 'plugin',
                   'public_key'          => 'pk_9f86febc1ca1399f11342380f6de0',
-                  'is_premium'          => true,
+                  'is_premium'          => false,
                   'premium_suffix'      => 'Premium',
                   // If your plugin is a serviceware, set this option to false.
                   'has_premium_version' => true,
