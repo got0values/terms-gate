@@ -275,12 +275,18 @@ else {
             </div>
             <?php wp_nonce_field('termga_bulk_assign', 'termga_bulk_assign_nonce'); ?>
         </form>
-        <style>
-          form p.submit {
-            margin: 0;
-            padding: 0;
-          }
-        </style>
+        <?php
+            add_action('admin_enqueue_scripts', function($hook) {
+                if ($hook === 'toplevel_page_termga-admin' || $hook === 'termga_page_termga-bulk-update') {
+                    wp_enqueue_style(
+                        'termga-admin-bulk-update',
+                        plugins_url('assets/css/admin-bulk-update.css', __FILE__),
+                        [],
+                        '1.0'
+                    );
+                }
+            });
+        ?>
       </div>
       <?php
   }

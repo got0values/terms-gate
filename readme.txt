@@ -1,5 +1,5 @@
 === Terms Gate ===
-Contributors: hooklabs
+Contributors: hooklabs, got0values
 Tags: terms, agreement, content gate, restrict, consent
 Requires at least: 5.0
 Tested up to: 6.8

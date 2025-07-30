@@ -49,25 +49,42 @@ function termga_meta_box_html($post) {
     echo '</select>';
 
     if ($limit_reached) {
-        echo '<p style="color:red;margin-top:10px;">You can only enable Terms Gate on 3 pages/posts in the free version.</p>';
-    } else {
-        // Add JavaScript to toggle select disabled state
-        ?>
-        <script>
-        (function() {
-            var checkbox = document.querySelector('input[name="termga_enabled"]');
-            var select = document.querySelector('select[name="termga_form_id"]');
-            function toggleSelect() {
-                select.disabled = !checkbox.checked;
-            }
-            checkbox.addEventListener('change', toggleSelect);
-            // Set initial state
-            toggleSelect();
-        })();
-        </script>
-        <?php
+        echo '<p style="color:red;margin-top:10px;">Free version limit reached.</p>';
     }
 }
+
+add_action('admin_enqueue_scripts', function($hook) {
+    // Only enqueue on post edit screens
+    if ($hook === 'post.php' || $hook === 'post-new.php') {
+        $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+        if ($post_id) {
+            $enabled = get_post_meta($post_id, '_termga_enabled', true);
+            $is_premium = function_exists('termga_fs') && termga_fs()->can_use_premium_code__premium_only();
+            $limit = $is_premium ? PHP_INT_MAX : 3;
+            $args = [
+                'post_type'   => ['post', 'page'],
+                'post_status' => 'any',
+                'meta_key'    => '_termga_enabled',
+                'meta_value'  => 'checked',
+                'fields'      => 'ids',
+                'posts_per_page' => -1,
+                'exclude'     => [$post_id],
+            ];
+            $enabled_posts = get_posts($args);
+            $limit_reached = (count($enabled_posts) >= $limit) && $enabled !== 'checked';
+
+            if (!$limit_reached) {
+                wp_enqueue_script(
+                    'termga-admin-meta-box',
+                    plugins_url('../assets/js/admin-meta-box.js', __FILE__),
+                    [],
+                    '1.0',
+                    true
+                );
+            }
+        }
+    }
+});
 
 function termga_save_meta($post_id) {
     // Security checks
